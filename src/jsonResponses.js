@@ -13,13 +13,33 @@ const respondJSONMeta = (request, response, status) => {
 
 const getAvailability = (request, response, method, desiredTime) => {
   if (method === 'get') {
-
-    //goes thru times and finds names for desired day and time
+    // goes thru times and finds names for desired day and time
     let freePpl;
-    for (time of times) {
-      if (time.day === desiredTime.day) {
-        freePpl = time.slots[desiredTime.hour];
-      }
+
+    switch (desiredTime.day) {
+      case 'mon':
+        freePpl = times.mon.slots[desiredTime.hour];
+        break;
+      case 'tue':
+        freePpl = times.tue.slots[desiredTime.hour];
+        break;
+      case 'wed':
+        freePpl = times.wed.slots[desiredTime.hour];
+        break;
+      case 'thur':
+        freePpl = times.thur.slots[desiredTime.hour];
+        break;
+      case 'fri':
+        freePpl = times.fri.slots[desiredTime.hour];
+        break;
+      case 'sat':
+        freePpl = times.sat.slots[desiredTime.hour];
+        break;
+      case 'sun':
+        freePpl = times.sun.slots[desiredTime.hour];
+        break;
+      default:
+        break;
     }
 
     const responseJSON = {
@@ -32,15 +52,16 @@ const getAvailability = (request, response, method, desiredTime) => {
   return respondJSONMeta(request, response, 200);
 };
 
-//gets time slot and adds person to list
+// gets time slot and adds person to list
 const addAvailability = (request, response, person) => {
-  let responseCode = 201;
+  const responseJSON = {};
+  const responseCode = 201;
 
-  let name = person.name;
-  let day = person.day;
-  let timeSlot = person.time;
+  const { name } = person;
+  const { day } = person;
+  const timeSlot = person.time;
 
-  //adds person to array
+  // adds person to array
   switch (day) {
     case 'mon':
       times.mon.slots[timeSlot].push(name);
@@ -63,6 +84,8 @@ const addAvailability = (request, response, person) => {
     case 'sun':
       times.sun.slots[timeSlot].push(name);
       break;
+    default:
+      break;
   }
 
   if (responseCode === 201) {
@@ -73,21 +96,23 @@ const addAvailability = (request, response, person) => {
   return respondJSONMeta(request, response, responseCode);
 };
 
-//gets time slot and removes person to list
+// gets time slot and removes person to list
 const removeAvailability = (request, response, person) => {
-  let responseCode = 201;
+  const responseJSON = {};
+  const responseCode = 201;
 
-  let name = person.name;
-  let day = person.day;
-  let timeSlot = person.time;
+  const { name } = person;
+  const { day } = person;
+  const timeSlot = person.time;
 
-  //looks thru day and filters out that person's name out of array
+  // looks thru day and filters out that person's name out of array
   switch (day) {
     case 'mon':
       times.mon.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'tue':
@@ -95,6 +120,7 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'wed':
@@ -102,6 +128,7 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'thur':
@@ -109,6 +136,7 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'fri':
@@ -116,6 +144,7 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'sat':
@@ -123,6 +152,7 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
       break;
     case 'sun':
@@ -130,7 +160,10 @@ const removeAvailability = (request, response, person) => {
         if (element !== name) {
           return true;
         }
+        return false;
       });
+      break;
+    default:
       break;
   }
 
@@ -190,5 +223,5 @@ module.exports = {
   notFound,
   getAvailability,
   addAvailability,
-  removeAvailability
+  removeAvailability,
 };
