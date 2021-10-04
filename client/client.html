@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Our simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script type="text/babel">
+          const content = document.querySelector('#content');
+          const formGrid = (day) => {
+            const column = document.createElement("div", day);
+            for(let i = 1; i < 5; i++){
+              let hour = document.createElement("div", `${i} - ${i+1}`);
+              hour.value = i;
+              column.append(hour);
+            }
+
+            content.append(column);
+          }
+          const parseJSON = (xhr, content) => {
+            if(xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json'){
+              const obj = JSON.parse(xhr.response);
+              console.dir(obj);
+      
+              if(obj.message) {
+                content.innerHTML += `<p>${obj.message}</p>`;
+              }
+            }
+          };
+      
+          const handleResponse = (xhr) => {
+            const content = document.querySelector('#content');
+          
+            switch(xhr.status) {
+              case 200:
+                content.innerHTML = '<b>Success!</b>';
+                break;
+              case 201:
+                content.innerHTML = '<b>Created!</b>';
+                break;
+              case 204:
+                content.innerHTML = '<b>Updated (No Content)!</b>';
+                break;
+              case 400:
+                content.innerHTML = '<b>Bad Request!</b>';
+                break;
+              default:
+                content.innerHTML = '<b>Error code not implemented by client</b>';
+                break;
+            }
+      
+            parseJSON(xhr, content);
+          };
+      
+          const sendNameFormPost = (e, nameForm) => {
+            e.preventDefault();
+            
+            const nameAction = nameForm.getAttribute('action');
+            const nameMethod = nameForm.getAttribute('method');
+      
+            const nameField = nameForm.querySelector('#nameField');
+            const ageField = nameForm.querySelector('#ageField');
+      
+            const xhr = new XMLHttpRequest();
+            xhr.open(nameMethod, nameAction);
+      
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      
+            xhr.onload = () => handleResponse(xhr);
+      
+            const formData = `name=${nameField.value}&age=${ageField.value}`;
+            xhr.send(formData);
+      
+            return false;
+          };
+      
+          const sendUserFormPost = (e, userForm) => {
+            e.preventDefault();
+            
+            const userAction = userForm.getAttribute('action');
+            const userMethod = userForm.getAttribute('method');
+      
+            const select = userForm.querySelector('#urlField');
+      
+            const xhr = new XMLHttpRequest();
+            xhr.open(userMethod, userAction);
+      
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      
+            xhr.onload = () => handleResponse(xhr);
+      
+            const formData = `method=${select.value}`;
+            xhr.send(formData);
+      
+            return false;
+          };
+      
+          const init = () => {
+            formGrid('monday');
+          };
+      
+          window.onload = init;
+        </script>
+</head>
+
+<body>
+  <h1>Fill out when you are free</h1>
+  <div id="content"></div>
+  <div id="timeGrid">
+    <div id="mon"> Monday
+      <div value="m1-2">1-2pm</div>
+      <div value="m2-3">2-3pm</div>
+      <div value="m3-4">3-4pm</div>
+      <div value="m4-5">4-5pm</div>
+    </div>
+    <div id="tue">
+      Tuesday
+      <div value="t1-2">1-2pm</div>
+      <div value="t2-3">2-3pm</div>
+      <div value="t3-4">3-4pm</div>
+      <div value="t4-5">4-5pm</div>
+    </div>
+    <div id="wed">
+      Wednesday
+      <div value="w1-2">1-2pm</div>
+      <div value="w2-3">2-3pm</div>
+      <div value="w3-4">3-4pm</div>
+      <div value="w4-5">4-5pm</div>
+    </div>
+    <div id="thurs">
+      Thursday
+      <div value="th1-2">1-2pm</div>
+      <div value="th2-3">2-3pm</div>
+      <div value="th3-4">3-4pm</div>
+      <div value="th4-5">4-5pm</div>
+    </div>
+    <div id="fri">
+      Friday
+      <div value="f1-2">1-2pm</div>
+      <div value="f2-3">2-3pm</div>
+      <div value="f3-4">3-4pm</div>
+      <div value="f4-5">4-5pm</div>
+    </div>
+    <div id="sat">
+      Saturday
+      <div value="s1-2">1-2pm</div>
+      <div value="s2-3">2-3pm</div>
+      <div value="s3-4">3-4pm</div>
+      <div value="s4-5">4-5pm</div>
+    </div>
+    <div id="sun">
+      Sunday
+      <div value="sn1-2">1-2pm</div>
+      <div value="sn2-3">2-3pm</div>
+      <div value="sn3-4">3-4pm</div>
+      <div value="sn4-5">4-5pm</div>
+    </div>
+  </div>
+</body>
+
+</html>
