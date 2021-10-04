@@ -1,4 +1,4 @@
-const users = {};
+const times = {};
 
 const respondJSON = (request, response, status, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
@@ -11,10 +11,19 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
-const getTimes = (request, response, method) => {
+const getAvailability = (request, response, method, desiredTime) => {
   if (method === 'get') {
+
+    //goes thru times and finds names for desired day and time
+    let freePpl;
+    for (time of times) {
+      if (time.day === desiredTime.day) {
+        freePpl = time.slots[desiredTime.hour];
+      }
+    }
+
     const responseJSON = {
-      users,
+      freePpl,
     };
 
     return respondJSON(request, response, 200, responseJSON);
@@ -23,35 +32,110 @@ const getTimes = (request, response, method) => {
   return respondJSONMeta(request, response, 200);
 };
 
-const addTime = (request, response, body) => {
-  const responseJSON = {
-    message: 'Name is required',
-  };
-
-  if (!body.name) {
-    responseJSON.id = 'missingParams';
-    return respondJSON(request, response, 400, responseJSON);
-  }
-
+//gets time slot and adds person to list
+const addAvailability = (request, response, person) => {
   let responseCode = 201;
 
-  if (users[body.name]) {
-    responseCode = 204;
-  } else {
-    users[body.name] = {};
-    users[body.name].name = body.name;
+  let name = person.name;
+  let day = person.day;
+  let timeSlot = person.time;
+
+  //adds person to array
+  switch (day) {
+    case 'mon':
+      times.mon.slots[timeSlot].push(name);
+      break;
+    case 'tue':
+      times.tue.slots[timeSlot].push(name);
+      break;
+    case 'wed':
+      times.wed.slots[timeSlot].push(name);
+      break;
+    case 'thur':
+      times.thur.slots[timeSlot].push(name);
+      break;
+    case 'fri':
+      times.fri.slots[timeSlot].push(name);
+      break;
+    case 'sat':
+      times.sat.slots[timeSlot].push(name);
+      break;
+    case 'sun':
+      times.sun.slots[timeSlot].push(name);
+      break;
   }
 
-  users[body.name].times.monday = body.times.monday;
-  users[body.name].times.tuesday = body.times.tuesday;
-  users[body.name].times.wednesday = body.times.wednesday;
-  users[body.name].times.thursday = body.times.thursday;
-  users[body.name].times.friday = body.times.friday;
-  users[body.name].times.saturday = body.times.saturday;
-  users[body.name].times.sunday = body.times.sunday;
+  if (responseCode === 201) {
+    responseJSON.message = 'Added Successfully!';
+    return respondJSON(request, response, responseCode, responseJSON);
+  }
+
+  return respondJSONMeta(request, response, responseCode);
+};
+
+//gets time slot and removes person to list
+const removeAvailability = (request, response, person) => {
+  let responseCode = 201;
+
+  let name = person.name;
+  let day = person.day;
+  let timeSlot = person.time;
+
+  //looks thru day and filters out that person's name out of array
+  switch (day) {
+    case 'mon':
+      times.mon.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'tue':
+      times.tue.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'wed':
+      times.wed.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'thur':
+      times.thur.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'fri':
+      times.fri.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'sat':
+      times.sat.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+    case 'sun':
+      times.sun.slots[timeSlot].filter((element) => {
+        if (element !== name) {
+          return true;
+        }
+      });
+      break;
+  }
 
   if (responseCode === 201) {
-    responseJSON.message = 'Created Successfully!';
+    responseJSON.message = 'Removed Successfully!';
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
@@ -104,6 +188,7 @@ module.exports = {
   badRequest,
   unauthorized,
   notFound,
-  getTimes,
-  addTime,
+  getAvailability,
+  addAvailability,
+  removeAvailability
 };

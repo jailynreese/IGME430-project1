@@ -20,7 +20,27 @@ html, body {
   text-align: center;
 }
 
-/* #timeGrid {
-  display: flex;
-  flex-direction: column;
-} */
+.hour {
+  padding: 15px 40px;
+  border: 1px solid black;
+}
+
+.day {
+  border: 1px solid black;
+}
+
+#grid {
+  display: grid;
+  justify-items: center;
+  grid:
+      [label-start] "filler monL tueL wedL thurL friL satL sunL"50px [days] "timesL mon tue wed thur fri sat sun"500px / [filler]100px [monL]100px [tueL]100px [wedL]100px [thurL]100px [friL]100px [satL]100px [sunL]100px
+}
+
+#timesL .hour{
+  padding: 6px;
+  border: 0ch;
+}
+
+#timesL{
+  padding: 5px 20px;
+}

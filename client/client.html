@@ -7,17 +7,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
-          const content = document.querySelector('#content');
-          const formGrid = (day) => {
-            const column = document.createElement("div", day);
-            for(let i = 1; i < 5; i++){
-              let hour = document.createElement("div", `${i} - ${i+1}`);
-              hour.value = i;
-              column.append(hour);
-            }
-
-            content.append(column);
-          }
+          
           const parseJSON = (xhr, content) => {
             if(xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json'){
               const obj = JSON.parse(xhr.response);
@@ -53,53 +43,53 @@
             parseJSON(xhr, content);
           };
       
-          const sendNameFormPost = (e, nameForm) => {
-            e.preventDefault();
+          // const sendNameFormPost = (e, nameForm) => {
+          //   e.preventDefault();
             
-            const nameAction = nameForm.getAttribute('action');
-            const nameMethod = nameForm.getAttribute('method');
+          //   const nameAction = nameForm.getAttribute('action');
+          //   const nameMethod = nameForm.getAttribute('method');
       
-            const nameField = nameForm.querySelector('#nameField');
-            const ageField = nameForm.querySelector('#ageField');
+          //   const nameField = nameForm.querySelector('#nameField');
+          //   const ageField = nameForm.querySelector('#ageField');
       
-            const xhr = new XMLHttpRequest();
-            xhr.open(nameMethod, nameAction);
+          //   const xhr = new XMLHttpRequest();
+          //   xhr.open(nameMethod, nameAction);
       
-            xhr.setRequestHeader('Accept', 'application/json');
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          //   xhr.setRequestHeader('Accept', 'application/json');
+          //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       
-            xhr.onload = () => handleResponse(xhr);
+          //   xhr.onload = () => handleResponse(xhr);
       
-            const formData = `name=${nameField.value}&age=${ageField.value}`;
-            xhr.send(formData);
+          //   const formData = `name=${nameField.value}&age=${ageField.value}`;
+          //   xhr.send(formData);
       
-            return false;
-          };
+          //   return false;
+          // };
       
-          const sendUserFormPost = (e, userForm) => {
-            e.preventDefault();
+          // const sendUserFormPost = (e, userForm) => {
+          //   e.preventDefault();
             
-            const userAction = userForm.getAttribute('action');
-            const userMethod = userForm.getAttribute('method');
+          //   const userAction = userForm.getAttribute('action');
+          //   const userMethod = userForm.getAttribute('method');
       
-            const select = userForm.querySelector('#urlField');
+          //   const select = userForm.querySelector('#urlField');
       
-            const xhr = new XMLHttpRequest();
-            xhr.open(userMethod, userAction);
+          //   const xhr = new XMLHttpRequest();
+          //   xhr.open(userMethod, userAction);
       
-            xhr.setRequestHeader('Accept', 'application/json');
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+          //   xhr.setRequestHeader('Accept', 'application/json');
+          //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       
-            xhr.onload = () => handleResponse(xhr);
+          //   xhr.onload = () => handleResponse(xhr);
       
-            const formData = `method=${select.value}`;
-            xhr.send(formData);
+          //   const formData = `method=${select.value}`;
+          //   xhr.send(formData);
       
-            return false;
-          };
+          //   return false;
+          // };
       
           const init = () => {
-            formGrid('monday');
+            
           };
       
           window.onload = init;
@@ -107,58 +97,69 @@
 </head>
 
 <body>
-  <h1>Fill out when you are free</h1>
-  <div id="content"></div>
-  <div id="timeGrid">
-    <div id="mon"> Monday
-      <div value="m1-2">1-2pm</div>
-      <div value="m2-3">2-3pm</div>
-      <div value="m3-4">3-4pm</div>
-      <div value="m4-5">4-5pm</div>
+    <div id="grid">
+        <h3 id="filler"></h3>
+        <h3 id="monL">monday</h3>
+        <h3 id="tueL">tuesday</h3>
+        <h3 id="wedL">wednesday</h3>
+        <h3 id="thurL">thursday</h3>
+        <h3 id="friL">friday</h3>
+        <h3 id="satL">saturday</h3>
+        <h3 id="sunL">sunday</h3>
+        <div id="timesL" class="day">
+            <div class="hour">1-2pm</div>
+            <div class="hour">2-3pm</div>
+            <div class="hour">3-4pm</div>
+            <div class="hour">4-5pm</div>
+        </div>
+        <div id="mon" class="day">
+            <div id="m10-11" class="hour"></div>
+            <div id="m11-12" class="hour"></div>
+            <div id="m12-1" class="hour"></div>
+            <div id="m1-2" class="hour"></div>
+            <div id="m2-3" class="hour"></div>
+            <div id="m3-4" class="hour"></div>
+            <div id="m4-5" class="hour"></div>
+            <div id="m5-6" class="hour"></div>
+            
+        </div>
+        <div id="tue" class="day">
+            <div id="t1-2" class="hour"></div>
+            <div id="t2-3" class="hour"></div>
+            <div id="t3-4" class="hour"></div>
+            <div id="t4-5" class="hour"></div>
+        </div>
+        <div id="wed" class="day">
+            <div id="w1-2" class="hour"></div>
+            <div id="w2-3" class="hour"></div>
+            <div id="w3-4" class="hour"></div>
+            <div id="w4-5" class="hour"></div>
+        </div>
+        <div id="thurs" class="day">
+            <div id="th1-2" class="hour"></div>
+            <div id="th2-3" class="hour"></div>
+            <div id="th3-4" class="hour"></div>
+            <div id="th4-5" class="hour"></div>
+        </div>
+        <div id="fri" class="day">
+            <div id="f1-2" class="hour"></div>
+            <div id="f2-3" class="hour"></div>
+            <div id="f3-4" class="hour"></div>
+            <div id="f4-5" class="hour"></div>
+        </div>
+        <div id="sat" class="day">
+            <div id="s1-2" class="hour"></div>
+            <div id="s2-3" class="hour"></div>
+            <div id="s3-4" class="hour"></div>
+            <div id="s4-5" class="hour"></div>
+        </div>
+        <div id="sun" class="day">
+            <div id="sn1-2" class="hour"></div>
+            <div id="sn2-3" class="hour"></div>
+            <div id="sn3-4" class="hour"></div>
+            <div id="sn4-5" class="hour"></div>
+        </div>
     </div>
-    <div id="tue">
-      Tuesday
-      <div value="t1-2">1-2pm</div>
-      <div value="t2-3">2-3pm</div>
-      <div value="t3-4">3-4pm</div>
-      <div value="t4-5">4-5pm</div>
-    </div>
-    <div id="wed">
-      Wednesday
-      <div value="w1-2">1-2pm</div>
-      <div value="w2-3">2-3pm</div>
-      <div value="w3-4">3-4pm</div>
-      <div value="w4-5">4-5pm</div>
-    </div>
-    <div id="thurs">
-      Thursday
-      <div value="th1-2">1-2pm</div>
-      <div value="th2-3">2-3pm</div>
-      <div value="th3-4">3-4pm</div>
-      <div value="th4-5">4-5pm</div>
-    </div>
-    <div id="fri">
-      Friday
-      <div value="f1-2">1-2pm</div>
-      <div value="f2-3">2-3pm</div>
-      <div value="f3-4">3-4pm</div>
-      <div value="f4-5">4-5pm</div>
-    </div>
-    <div id="sat">
-      Saturday
-      <div value="s1-2">1-2pm</div>
-      <div value="s2-3">2-3pm</div>
-      <div value="s3-4">3-4pm</div>
-      <div value="s4-5">4-5pm</div>
-    </div>
-    <div id="sun">
-      Sunday
-      <div value="sn1-2">1-2pm</div>
-      <div value="sn2-3">2-3pm</div>
-      <div value="sn3-4">3-4pm</div>
-      <div value="sn4-5">4-5pm</div>
-    </div>
-  </div>
 </body>
 
 </html>
