@@ -1,4 +1,4 @@
-const times = {};
+const events = {};
 
 const respondJSON = (request, response, status, object) => {
   response.writeHead(status, { 'Content-Type': 'application/json' });
@@ -14,29 +14,30 @@ const respondJSONMeta = (request, response, status) => {
 const getAvailability = (request, response, method, desiredTime) => {
   if (method === 'get') {
     // goes thru times and finds names for desired day and time
+    const event = events[desiredTime.event];
     let freePpl;
 
     switch (desiredTime.day) {
       case 'mon':
-        freePpl = times.mon.slots[desiredTime.hour];
+        freePpl = event.mon.slots[desiredTime.hour];
         break;
       case 'tue':
-        freePpl = times.tue.slots[desiredTime.hour];
+        freePpl = event.tue.slots[desiredTime.hour];
         break;
       case 'wed':
-        freePpl = times.wed.slots[desiredTime.hour];
+        freePpl = event.wed.slots[desiredTime.hour];
         break;
       case 'thur':
-        freePpl = times.thur.slots[desiredTime.hour];
+        freePpl = event.thur.slots[desiredTime.hour];
         break;
       case 'fri':
-        freePpl = times.fri.slots[desiredTime.hour];
+        freePpl = event.fri.slots[desiredTime.hour];
         break;
       case 'sat':
-        freePpl = times.sat.slots[desiredTime.hour];
+        freePpl = event.sat.slots[desiredTime.hour];
         break;
       case 'sun':
-        freePpl = times.sun.slots[desiredTime.hour];
+        freePpl = event.sun.slots[desiredTime.hour];
         break;
       default:
         break;
@@ -57,32 +58,33 @@ const addAvailability = (request, response, person) => {
   const responseJSON = {};
   const responseCode = 201;
 
-  const { name } = person;
-  const { day } = person;
+  const event = events[person.event];
+  const { name } = person.name;
+  const { day } = person.day;
   const timeSlot = person.time;
 
   // adds person to array
   switch (day) {
     case 'mon':
-      times.mon.slots[timeSlot].push(name);
+      event.mon.slots[timeSlot].push(name);
       break;
     case 'tue':
-      times.tue.slots[timeSlot].push(name);
+      event.tue.slots[timeSlot].push(name);
       break;
     case 'wed':
-      times.wed.slots[timeSlot].push(name);
+      event.wed.slots[timeSlot].push(name);
       break;
     case 'thur':
-      times.thur.slots[timeSlot].push(name);
+      event.thur.slots[timeSlot].push(name);
       break;
     case 'fri':
-      times.fri.slots[timeSlot].push(name);
+      event.fri.slots[timeSlot].push(name);
       break;
     case 'sat':
-      times.sat.slots[timeSlot].push(name);
+      event.sat.slots[timeSlot].push(name);
       break;
     case 'sun':
-      times.sun.slots[timeSlot].push(name);
+      event.sun.slots[timeSlot].push(name);
       break;
     default:
       break;
@@ -101,14 +103,15 @@ const removeAvailability = (request, response, person) => {
   const responseJSON = {};
   const responseCode = 201;
 
-  const { name } = person;
-  const { day } = person;
+  const event = events[person.event];
+  const { name } = person.name;
+  const { day } = person.day;
   const timeSlot = person.time;
 
   // looks thru day and filters out that person's name out of array
   switch (day) {
     case 'mon':
-      times.mon.slots[timeSlot].filter((element) => {
+      event.mon.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -116,7 +119,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'tue':
-      times.tue.slots[timeSlot].filter((element) => {
+      event.tue.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -124,7 +127,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'wed':
-      times.wed.slots[timeSlot].filter((element) => {
+      event.wed.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -132,7 +135,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'thur':
-      times.thur.slots[timeSlot].filter((element) => {
+      event.thur.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -140,7 +143,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'fri':
-      times.fri.slots[timeSlot].filter((element) => {
+      event.fri.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -148,7 +151,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'sat':
-      times.sat.slots[timeSlot].filter((element) => {
+      event.sat.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -156,7 +159,7 @@ const removeAvailability = (request, response, person) => {
       });
       break;
     case 'sun':
-      times.sun.slots[timeSlot].filter((element) => {
+      event.sun.slots[timeSlot].filter((element) => {
         if (element !== name) {
           return true;
         }
@@ -169,6 +172,28 @@ const removeAvailability = (request, response, person) => {
 
   if (responseCode === 201) {
     responseJSON.message = 'Removed Successfully!';
+    return respondJSON(request, response, responseCode, responseJSON);
+  }
+
+  return respondJSONMeta(request, response, responseCode);
+};
+
+const addEvent = (request, response, newEvent) => {
+  const responseJSON = {};
+  const responseCode = 201;
+
+  events[newEvent] = {
+    mon: {},
+    tue: {},
+    wed: {},
+    thur: {},
+    fri: {},
+    sat: {},
+    sun: {},
+  };
+
+  if (responseCode === 201) {
+    responseJSON.message = 'Event Created Successfully!';
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
@@ -224,4 +249,5 @@ module.exports = {
   getAvailability,
   addAvailability,
   removeAvailability,
+  addEvent,
 };

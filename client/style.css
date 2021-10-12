@@ -32,8 +32,8 @@ html, body {
 #grid {
   display: grid;
   justify-items: center;
-  grid:
-      [label-start] "filler monL tueL wedL thurL friL satL sunL"50px [days] "timesL mon tue wed thur fri sat sun"500px / [filler]100px [monL]100px [tueL]100px [wedL]100px [thurL]100px [friL]100px [satL]100px [sunL]100px
+  /* grid: */
+      /* [label-start] "filler monL tueL wedL thurL friL satL sunL"50px [days] "timesL mon tue wed thur fri sat sun"500px / [filler]100px [monL]100px [tueL]100px [wedL]100px [thurL]100px [friL]100px [satL]100px [sunL]100px */
 }
 
 #timesL .hour{
@@ -43,4 +43,8 @@ html, body {
 
 #timesL{
   padding: 5px 20px;
+}
+
+#timeLabels .hour{
+  padding: 6px;
 }

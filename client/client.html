@@ -7,7 +7,191 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
-          
+          const grid = document.querySelector('#grid');
+          const eventType = document.querySelector('#eventType');
+          let eventTypeValue;
+
+          document.querySelector('#eventTypeSelect').addEventListener('change', function(e){
+            eventTypeValue = e.target.value;
+            if(eventTypeValue === 'specific'){
+              eventType.innerHTML += `
+                <label for="event-date">Event Date:</label>
+
+                <input type="date" id="event-date" name="event-date"
+                      value="2018-07-22"
+                      min="2021-10-12" max="2023-12-31">`;
+
+            } else if(eventTypeValue === 'week'){
+              eventType.innerHTML += `
+                <div id="dayWeekCheckbox">
+                    <input type="checkbox" id="day1" name="day1" value="Mon">
+                    <label for="day1">Monday</label><br>
+                    <input type="checkbox" id="day2" name="day2" value="Tue">
+                    <label for="day2">Tuesday</label><br>
+                    <input type="checkbox" id="day3" name="day3" value="Wed">
+                    <label for="day3">Wednesday</label><br>
+                    <input type="checkbox" id="day4" name="day4" value="Thur">
+                    <label for="day4">Thursday</label><br>
+                    <input type="checkbox" id="day5" name="day5" value="Fri">
+                    <label for="day5">Friday</label><br>
+                    <input type="checkbox" id="day6" name="day6" value="Sat">
+                    <label for="day6">Saturday</label><br>
+                    <input type="checkbox" id="day7" name="day7" value="Sun">
+                    <label for="day7">Sunday</label><br>
+                </div>`;
+            }
+          });
+
+  
+          //creates columns within grid
+          const addDayColumn = (day, startTime, endTime) => {
+            const column = document.createElement('div');
+            column.id = day;
+            column.className = 'day';
+            grid.append(column);
+
+            for(let i = startTime; i < endTime; i++){
+              const slot = document.createElement('div');
+              slot.id = `${day, i}`;
+              slot.className = 'hour';
+              slot.value = false;
+              column.append(slot);
+              
+              //when slot is clicked, sends data to server
+              slot.addEventListener('click', (e, day, i) => {
+                  if(slot.value === false) {
+                    slot.action = '/addAvailability';
+                    slot.value = true;
+                  } else {
+                    slot.action = '/removeAvailability';
+                    slot.value = false;
+                  }
+                  sendTimeSlot(e, day, i, slot.value);
+              });
+            }
+          };
+
+          //creates grid
+          const createGrid = (date, startTime, endTime) => {
+            //string to assign to 
+            let stylingString1 = '[label-start] "filler';
+            let stylingString2 = ' / [filler]120px';
+
+            if(date.length === 1) {
+              grid.innerHTML = 
+              `<h3 id="filler"></h3>
+               <h3 id="eventDateLabel">${date}</h3>
+               <div id="timesL" class="day">
+              `;
+
+              stylingString1 += ' timesL';
+
+              for(let i = startTime; i < endTime; i++){
+                grid.innerHTML += `<div class="hour">${i}:00 - ${i+1}:00</div>`;
+              }
+
+              grid.innerHTML += `</div>`;
+
+
+            } else {
+              grid.innerHTML = `<h3 id="filler"></h3>`;
+
+              if(date.includes('Mon')){
+                grid.innerHTML += `<h3 id="monL">Monday</h3>`;
+                stylingString1 += ' monL';
+                stylingString2 += '  [monL]100px';
+              }
+
+              if(date.includes('Tue')){
+                grid.innerHTML += `<h3 id="tueL">Tuesday</h3>`;
+                stylingString1 += ' tueL';
+                stylingString2 += '  [tueL]100px';
+              }
+
+              if(date.includes('Wed')){
+                grid.innerHTML += `<h3 id="wedL">Wednesday</h3>`;
+                stylingString1 += ' wedL';
+                stylingString2 += '  [wedL]100px';
+              }
+
+              if(date.includes('Thur')){
+                grid.innerHTML += `<h3 id="thursL">Thursday</h3>`;
+                stylingString1 += ' thurL';
+                stylingString2 += '  [thurL]100px';
+              }
+
+              if(date.includes('Fri')){
+                grid.innerHTML += `<h3 id="friL">Friday</h3>`;
+                stylingString1 += ' friL';
+                stylingString2 += '  [friL]100px';
+              }
+
+              if(date.includes('Sat')){
+                grid.innerHTML += `<h3 id="satL">Saturday</h3>`;
+                stylingString1 += ' satL';
+                stylingString2 += '  [satL]100px';
+              }
+
+              if(date.includes('Sun')){
+                grid.innerHTML += `<h3 id="sunL">Sunday</h3>`;
+                stylingString1 += ' sunL';
+                stylingString2 += '  [sunL]100px';
+              }
+
+              let timeLabels = `<div id='timeLabels'>`; 
+
+              for(let i = startTime; i < endTime; i++){
+                timeLabels += `<div class="hour">${i}:00 - ${i+1}:00</div>`;
+              }
+
+              timeLabels += `</div>`;
+              grid.innerHTML += timeLabels;
+
+              stylingString1  += `"50px [days] "timesL`;
+
+              if(date.includes('Mon')){
+                addDayColumn('mon', startTime, endTime);
+                stylingString1  += ` mon`;
+              }
+
+              if(date.includes('Tue')){
+                addDayColumn('tue', startTime, endTime);
+                stylingString1  += ` tue`;
+              }
+
+              if(date.includes('Wed')){
+                addDayColumn('wed', startTime, endTime);
+                stylingString1  += ` wed`;
+              }
+
+              if(date.includes('Thur')){
+                addDayColumn('thur', startTime, endTime);
+                stylingString1  += ` thur`;
+              }
+
+              if(date.includes('Fri')){
+                addDayColumn('fri', startTime, endTime);
+                stylingString1  += ` fri`;
+              }
+
+              if(date.includes('Sat')){
+                addDayColumn('sat', startTime, endTime);
+                stylingString1  += ` sat`;
+              }
+
+              if(date.includes('Sun')){
+                addDayColumn('sun', startTime, endTime);
+                stylingString1  += ` sun`;
+              }
+
+              stylingString1 += `"${30*(endTime - startTime + 1)}px`;
+
+              let completeStyleString = stylingString1 + stylingString2;
+              console.log(completeStyleString);
+              grid.style.grid = completeStyleString;
+            }       
+          };
+
           const parseJSON = (xhr, content) => {
             if(xhr.response && xhr.getResponseHeader('Content-Type') === 'application/json'){
               const obj = JSON.parse(xhr.response);
@@ -43,53 +227,91 @@
             parseJSON(xhr, content);
           };
       
-          // const sendNameFormPost = (e, nameForm) => {
-          //   e.preventDefault();
-            
-          //   const nameAction = nameForm.getAttribute('action');
-          //   const nameMethod = nameForm.getAttribute('method');
+          const sendPost = (e, eventForm, date) => {
+            e.preventDefault();
+
+            const formAction = eventForm.getAttribute('action');
+            const formMethod = eventForm.getAttribute('method'); 
+
+            const eventField = eventForm.querySelector('#eventName').value;
+            const nameField = eventForm.querySelector('#name').value;
+
+            let startTime = eventForm.querySelector('#startTime').value;          
+
+            // const xhr = new XMLHttpRequest();
+            // xhr.open(nameMethod, nameAction);
       
-          //   const nameField = nameForm.querySelector('#nameField');
-          //   const ageField = nameForm.querySelector('#ageField');
+            // xhr.setRequestHeader('Accept', 'application/json');
+            // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       
-          //   const xhr = new XMLHttpRequest();
-          //   xhr.open(nameMethod, nameAction);
+            //xhr.onload = () => handleResponse(xhr);
       
-          //   xhr.setRequestHeader('Accept', 'application/json');
-          //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            //const formData = `event=${eventField}&name=${nameField}&days=${date.toString()}&hour=${startTime}`;
+            //xhr.send(formData);
       
-          //   xhr.onload = () => handleResponse(xhr);
-      
-          //   const formData = `name=${nameField.value}&age=${ageField.value}`;
-          //   xhr.send(formData);
-      
-          //   return false;
-          // };
-      
-          // const sendUserFormPost = (e, userForm) => {
-          //   e.preventDefault();
-            
-          //   const userAction = userForm.getAttribute('action');
-          //   const userMethod = userForm.getAttribute('method');
-      
-          //   const select = userForm.querySelector('#urlField');
-      
-          //   const xhr = new XMLHttpRequest();
-          //   xhr.open(userMethod, userAction);
-      
-          //   xhr.setRequestHeader('Accept', 'application/json');
-          //   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      
-          //   xhr.onload = () => handleResponse(xhr);
-      
-          //   const formData = `method=${select.value}`;
-          //   xhr.send(formData);
-      
-          //   return false;
-          // };
+            return false;
+          };
       
           const init = () => {
-            
+            const eventForm = document.querySelector('#eventForm');
+
+            eventForm.addEventListener('submit', function(e){
+              let startTime = eventForm.querySelector('#startTime').value;
+              let endTime = eventForm.querySelector('#endTime').value;
+              let eventName = eventForm.querySelector('#eventName').value;
+              let eventTypeValue = eventForm.querySelector('#eventType').value;
+
+              //ensures appropriate time slot
+              if(startTime < endTime && eventName === ''){
+                let date = [];
+              
+                //gets day of specific date
+                if(eventTypeValue === 'specific'){
+                  date[0] = document.querySelector('#event-date').value;
+                //gets all days of week
+                } else if(eventTypeValue === 'week'){
+                  if(document.querySelector('input[id="day1"]').checked) {
+                    date.push(document.querySelector('input[id="day1"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day2"]').checked) {
+                    date.push(document.querySelector('input[id="day2"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day3"]').checked) {
+                    date.push(document.querySelector('input[id="day3"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day4"]').checked) {
+                    date.push(document.querySelector('input[id="day4"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day5"]').checked) {
+                    date.push(document.querySelector('input[id="day5"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day6"]').checked) {
+                    date.push(document.querySelector('input[id="day6"]').value);
+                  }
+
+                  if(document.querySelector('input[id="day7"]').checked) {
+                    date.push(document.querySelector('input[id="day7"]').value);
+                  }
+
+                sendPost(e, eventForm, date);
+
+                //emptys form and creates grid
+                eventType.innerHTML = ``;
+                createGrid(date, startTime, endTime);
+
+              } else if (startTime >= endTime){
+                grid.innerHTML = `<h2>Please enter a valid event name.</h2>`
+              } else {
+                //tells user to enter appropriate time slot
+                grid.innerHTML = `<h2>Please enter an appropriate time slot.</h2>`
+              }
+
+            });
           };
       
           window.onload = init;
@@ -97,69 +319,75 @@
 </head>
 
 <body>
-    <div id="grid">
-        <h3 id="filler"></h3>
-        <h3 id="monL">monday</h3>
-        <h3 id="tueL">tuesday</h3>
-        <h3 id="wedL">wednesday</h3>
-        <h3 id="thurL">thursday</h3>
-        <h3 id="friL">friday</h3>
-        <h3 id="satL">saturday</h3>
-        <h3 id="sunL">sunday</h3>
-        <div id="timesL" class="day">
-            <div class="hour">1-2pm</div>
-            <div class="hour">2-3pm</div>
-            <div class="hour">3-4pm</div>
-            <div class="hour">4-5pm</div>
-        </div>
-        <div id="mon" class="day">
-            <div id="m10-11" class="hour"></div>
-            <div id="m11-12" class="hour"></div>
-            <div id="m12-1" class="hour"></div>
-            <div id="m1-2" class="hour"></div>
-            <div id="m2-3" class="hour"></div>
-            <div id="m3-4" class="hour"></div>
-            <div id="m4-5" class="hour"></div>
-            <div id="m5-6" class="hour"></div>
-            
-        </div>
-        <div id="tue" class="day">
-            <div id="t1-2" class="hour"></div>
-            <div id="t2-3" class="hour"></div>
-            <div id="t3-4" class="hour"></div>
-            <div id="t4-5" class="hour"></div>
-        </div>
-        <div id="wed" class="day">
-            <div id="w1-2" class="hour"></div>
-            <div id="w2-3" class="hour"></div>
-            <div id="w3-4" class="hour"></div>
-            <div id="w4-5" class="hour"></div>
-        </div>
-        <div id="thurs" class="day">
-            <div id="th1-2" class="hour"></div>
-            <div id="th2-3" class="hour"></div>
-            <div id="th3-4" class="hour"></div>
-            <div id="th4-5" class="hour"></div>
-        </div>
-        <div id="fri" class="day">
-            <div id="f1-2" class="hour"></div>
-            <div id="f2-3" class="hour"></div>
-            <div id="f3-4" class="hour"></div>
-            <div id="f4-5" class="hour"></div>
-        </div>
-        <div id="sat" class="day">
-            <div id="s1-2" class="hour"></div>
-            <div id="s2-3" class="hour"></div>
-            <div id="s3-4" class="hour"></div>
-            <div id="s4-5" class="hour"></div>
-        </div>
-        <div id="sun" class="day">
-            <div id="sn1-2" class="hour"></div>
-            <div id="sn2-3" class="hour"></div>
-            <div id="sn3-4" class="hour"></div>
-            <div id="sn4-5" class="hour"></div>
-        </div>
+  <form id="eventForm" action="/addEvent" method="post">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="eventName">Event Name:</label><br>
+    <input type="text" id="eventName" name="eventName"><br>
+    <div id="eventType">
+      <label for="eventType">Type of Event:</label><br>
+      <select id="eventTypeSelect">
+        <option value="specific">Specific Day</option>
+        <option value="week">Days of the Week</option>
+      </select>
     </div>
+    <label for="startTime">Starting Time:</label><br>
+    <select id="startTime">
+
+      <option value="1">1am</option>
+      <option value="2">2am</option>
+      <option value="3">3am</option>
+      <option value="4">4am</option>
+      <option value="5">5am</option>
+      <option value="6">6am</option>
+      <option value="7">7am</option>
+      <option value="8">8am</option>
+      <option value="9">9am</option>
+      <option value="10">10am</option>
+      <option value="11">11am</option>
+      <option value="12">12pm</option>
+      <option value="13">1pm</option>
+      <option value="14">2pm</option>
+      <option value="15">3pm</option>
+      <option value="16">4pm</option>
+      <option value="17">5pm</option>
+      <option value="18">6pm</option>
+      <option value="19">7pm</option>
+      <option value="20">8pm</option>
+      <option value="21">9pm</option>
+      <option value="22">10pm</option>
+      <option value="23">11pm</option>
+    </select>
+    <label for="endTime">End Time:</label><br>
+    <select id="endTime">
+      <option value="1">1am</option>
+      <option value="2">2am</option>
+      <option value="3">3am</option>
+      <option value="4">4am</option>
+      <option value="5">5am</option>
+      <option value="6">6am</option>
+      <option value="7">7am</option>
+      <option value="8">8am</option>
+      <option value="9">9am</option>
+      <option value="10">10am</option>
+      <option value="11">11am</option>
+      <option value="12">12pm</option>
+      <option value="13">1pm</option>
+      <option value="14">2pm</option>
+      <option value="15">3pm</option>
+      <option value="16">4pm</option>
+      <option value="17">5pm</option>
+      <option value="18">6pm</option>
+      <option value="19">7pm</option>
+      <option value="20">8pm</option>
+      <option value="21">9pm</option>
+      <option value="22">10pm</option>
+      <option value="23">11pm</option>
+    </select>
+
+    <input type="submit" value="Add Event">Create new event</input>
+  </form>
+  <div id="grid"></div>
 </body>
 
 </html>
